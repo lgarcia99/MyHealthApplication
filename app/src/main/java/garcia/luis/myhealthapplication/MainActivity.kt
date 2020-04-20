@@ -1,11 +1,13 @@
 package garcia.luis.myhealthapplication
 
-import androidx.appcompat.app.AppCompatActivity
+import android.R.attr.data
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import kotlin.math.roundToInt
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,22 +22,40 @@ class MainActivity : AppCompatActivity() {
         val rango: TextView = findViewById(R.id.range) as TextView
 
         calcular.setOnClickListener {
-            var p:Float = peso.text.toString().toFloat()
-            var a:Float = altura.text.toString().toFloat()
+            try {
+                var p:Float = peso.text.toString().toFloat()
+                var a:Float = altura.text.toString().toFloat()
 
-            val m: Float = p / (a * a)
-            imc.setText(""+m)
+                val m: Float = (p / ((a * a) / 100)) * 100
+                imc.setText("IMC: $m")
 
-            /*if (m < 0) {
-                rango.setText("")
-            }*/
-
-            when (m) {
-                in 0.0..18.5 -> rango.setBackgroundResource(R.color.lime)
-                in 18.5..24.9 -> rango.setBackgroundResource(R.color.green)
-                in 25.0..29.9 -> rango.setBackgroundResource(R.color.yellow)
-                in 30.0..39.9 -> rango.setBackgroundResource(R.color.orange)
-                else -> rango.setBackgroundResource(R.color.red)
+                when (m) {
+                    in 0.0..18.5 -> {
+                        rango.setBackgroundResource(R.color.lime)
+                        rango.setText("Infrapeso")
+                    }
+                    in 18.5..24.9 -> {
+                        rango.setBackgroundResource(R.color.green)
+                        rango.setText("Peso normal")
+                    }
+                    in 25.0..29.9 -> {
+                        rango.setBackgroundResource(R.color.yellow)
+                        rango.setText("Sobrepeso")
+                    }
+                    in 30.0..39.9 -> {
+                        rango.setBackgroundResource(R.color.orange)
+                        rango.setText("Obesidad")
+                    }
+                    else -> {
+                        rango.setBackgroundResource(R.color.red)
+                        rango.setText("Hiperobesidad")
+                    }
+                }
+            } catch (e: Throwable) {
+                Toast.makeText(
+                    getBaseContext(), "Error: Ingrese bien sus cantidades antes de continuar",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
